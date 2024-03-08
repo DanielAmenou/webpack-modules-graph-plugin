@@ -1,4 +1,5 @@
 interface ModulesGraphPluginOptions {
+  showOnlyProjectFiles: string;
   fileName: string;
 }
 

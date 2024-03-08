@@ -6,12 +6,14 @@ const {graphDataBuilder} = require("./GraphDataBuilder")
 class ModulesGraphPlugin {
   constructor(options = {}) {
     this.filename = options.filename || "modules-graph.html"
+    // Add an option to show only project files
+    this.showOnlyProjectFiles = options.showOnlyProjectFiles || false
   }
 
   apply(compiler) {
     compiler.hooks.done.tapAsync("ModulesGraphPlugin", async (stats, callback) => {
       const outputPath = compiler.options.output.path
-      const graphData = graphDataBuilder(stats.compilation)
+      const graphData = graphDataBuilder(stats.compilation, this.showOnlyProjectFiles) // Pass the option to the builder
       const graphHtml = generateGraphHtml(graphData)
       const filePath = path.resolve(outputPath, this.filename)
 

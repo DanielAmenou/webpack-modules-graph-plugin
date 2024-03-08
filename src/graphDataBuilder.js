@@ -1,36 +1,31 @@
-const {formatModuleName} = require("./utils")
+const {formatModuleName, determineGroup, formatSize} = require("./utils")
 
-function graphDataBuilder(compilation) {
+function graphDataBuilder(compilation, showOnlyProjectFiles = false) {
   const moduleGraph = compilation.moduleGraph
   const nodes = []
   const links = []
 
   compilation.modules.forEach((module) => {
-    nodes.push({
-      id: module.identifier(),
-      name: formatModuleName(module),
-      group: determineGroup(module),
-      size: module.size(),
-    })
+    // Filter out node_modules if showOnlyProjectFiles is true
+    if (!showOnlyProjectFiles || (showOnlyProjectFiles && determineGroup(module) !== 'node_modules')) {
+      nodes.push({
+        id: module.identifier(),
+        name: formatModuleName(module),
+        group: determineGroup(module),
+        size: module.size(),
+        displaySize: formatSize(module.size()),
+      })
 
-    module.dependencies.forEach((dependency) => {
-      const depModule = moduleGraph.getModule(dependency)
-      if (depModule) {
-        links.push({source: module.identifier(), target: depModule.identifier()})
-      }
-    })
+      module.dependencies.forEach((dependency) => {
+        const depModule = moduleGraph.getModule(dependency)
+        if (depModule && (!showOnlyProjectFiles || (showOnlyProjectFiles && determineGroup(depModule) !== 'node_modules'))) {
+          links.push({source: module.identifier(), target: depModule.identifier()})
+        }
+      })
+    }
   })
 
   return {nodes, links}
-}
-
-function determineGroup(module) {
-  if (module.resource && module.resource.includes("node_modules")) {
-    return "node_modules"
-  } else if (module.type && module.type.startsWith("asset")) {
-    return "assets"
-  }
-  return "project"
 }
 
 module.exports = {graphDataBuilder}
