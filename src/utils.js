@@ -26,18 +26,24 @@ function formatModuleName(module) {
 }
 
 function determineGroup(module) {
+  if (module.resource && module.resource.includes("core-js")) {
+    return "internal_lib"
+  }
   if (module.resource && module.resource.includes("node_modules")) {
     return "node_modules"
+  } else if (module.resource && /\.(css|scss|sass|less)$/.test(module.resource)) {
+    return "css"
   } else if (module.type && module.type.startsWith("asset")) {
     return "assets"
   }
+
   return "project"
 }
 
 function formatSize(bytes) {
-  if (bytes < 1024) return bytes + ' bytes'
-  else if (bytes < 1048576) return (bytes / 1024).toFixed(2) + ' KB'
-  return (bytes / 1048576).toFixed(2) + ' MB'
+  if (bytes < 1024) return bytes + " bytes"
+  else if (bytes < 1048576) return (bytes / 1024).toFixed(2) + " KB"
+  return (bytes / 1048576).toFixed(2) + " MB"
 }
 
 module.exports = {formatModuleName, determineGroup, formatSize}

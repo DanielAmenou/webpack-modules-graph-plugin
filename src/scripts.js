@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const width = document.body.clientWidth
   const height = document.body.clientHeight
 
-  const color = d3.scaleOrdinal(["#377eb8", "#ff7f00", "#4daf4a", "#984ea3", "#e41a1c"])
+  const color = d3.scaleOrdinal().domain(["node_modules", "assets", "project", "css", "internal_lib"]).range(["#ff7f00", "#984ea3", "#377eb8", "#4daf4a", "#e41a1c", "#a65628"])
 
   // Setting up the SVG with zoom functionality
   const svg = d3
@@ -59,13 +59,14 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("fill", (d) => color(d.group))
       .attr("stroke", "#fff")
       .on("mouseover", (event, d) => {
-        const displaySize = typeof d.displaySize !== 'undefined' ? d.displaySize : d.size;
-        const tooltipContent = `Name: ${d.name}<br>Size: ${displaySize}`;
-        tooltip.html(tooltipContent)
-          .style("left", (event.pageX + 10) + "px")
-          .style("top", (event.pageY - 28) + "px")
+        const displaySize = typeof d.displaySize !== "undefined" ? d.displaySize : d.size
+        const tooltipContent = `Name: ${d.name}<br>Size: ${displaySize}`
+        tooltip
+          .html(tooltipContent)
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 28 + "px")
           .style("visibility", "visible")
-          .style("opacity", 1);
+          .style("opacity", 1)
       })
 
       .on("mouseout", () => tooltip.style("visibility", "hidden"))
