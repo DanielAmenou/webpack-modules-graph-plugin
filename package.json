@@ -1,0 +1,32 @@
+{
+  "name": "webpack-modules-graph-plugin",
+  "description": "A webpack plugin to generate a graph of the modules in the build",
+  "version": "1.1.0",
+  "types": "index.d.ts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish:beta": "npm version prerelease --preid=beta -m \"beta version - %s\" && npm publish --tag beta",
+    "publish:patch": "npm version patch -m \"patch version - %s\" && npm publish",
+    "publish:minor": "npm version minor -m \"minor version - %s\" && npm publish",
+    "publish:major": "npm version major -m \"major version - %s\" && npm publish",
+    "postpublish": "git push && git push --tags"
+  },
+  "homepage": "https://github.com/DanielAmenou/webpack-modules-graph-plugin#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DanielAmenou/webpack-modules-graph-plugin.git"
+  },
+  "keywords": [
+    "webpack",
+    "modules",
+    "plugin",
+    "graph"
+  ],
+  "author": "Daniel Amenou <amenou.daniel@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "open": "^10.0.4",
+    "webpack": "^5.90.3"
+  }
+}
