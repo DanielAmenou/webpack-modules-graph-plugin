@@ -1,11 +1,54 @@
 document.addEventListener("DOMContentLoaded", function () {
   const width = document.body.clientWidth
   const height = document.body.clientHeight
+  const groups = ["node_modules", "assets", "project", "css", "remote", "polyfills"]
+
+  // Setting up the color selectors
+  groups.forEach((group) => {
+    const groupItem = document.createElement("div")
+    groupItem.className = "group-item"
+
+    const colorPreview = document.createElement("div")
+    colorPreview.className = "group-color"
+    colorPreview.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue(`--color-${group}`)
+
+    const label = document.createElement("span")
+    label.textContent = group.charAt(0).toUpperCase() + group.slice(1).replace("_", " ")
+
+    const colorPicker = document.createElement("input")
+    colorPicker.type = "color"
+    colorPicker.value = rgbToHex(colorPreview.style.backgroundColor)
+    colorPicker.style.visibility = "hidden"
+    colorPicker.style.width = "0"
+    colorPicker.style.height = "0"
+    colorPreview.addEventListener("click", () => colorPicker.click())
+
+    colorPicker.addEventListener("input", (e) => {
+      const newColor = e.target.value
+      document.documentElement.style.setProperty(`--color-${group}`, newColor)
+      colorPreview.style.backgroundColor = newColor
+      updateNodeColors(group, newColor) // Function to update node colors in the graph
+    })
+
+    groupItem.appendChild(colorPreview)
+    groupItem.appendChild(label)
+    groupItem.appendChild(colorPicker)
+
+    colorSelectors.appendChild(groupItem)
+  })
+
+  function updateNodeColors(group, color) {
+    node.each(function (d) {
+      if (d.group === group) {
+        d3.select(this).style("fill", color)
+      }
+    })
+  }
 
   const color = d3
     .scaleOrdinal()
-    .domain(["node_modules", "assets", "project", "css", "internal_lib", "remote", "dynamic", "polyfills"])
-    .range(["#ff7f00", "#984ea3", "#377eb8", "#4daf4a", "#e41a1c", "#a65628", "#f781bf", "#999999", "#8dd3c7"])
+    .domain(groups)
+    .range(groups.map((group) => getComputedStyle(document.documentElement).getPropertyValue(`--color-${group}`).trim()))
 
   // Setting up the SVG with zoom functionality
   const svg = d3
@@ -121,3 +164,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   updateGraph(graph)
 })
+
+function rgbToHex(rgb) {
+  let [r, g, b] = rgb.match(/\d+/g)
+  return "#" + ((1 << 24) + (parseInt(r) << 16) + (parseInt(g) << 8) + parseInt(b)).toString(16).slice(1)
+}
