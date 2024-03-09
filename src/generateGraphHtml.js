@@ -20,12 +20,13 @@ function generateGraphHtml(graphData) {
     <div id="filters">
         <input type="text" id="searchInput" placeholder="Search...">
         <select id="typeFilter">
-            <option value="">Filter by Type</option>
-            <option value="project">Project</option>
-            <option value="node_modules">Node Modules</option>
+            <option value="">All Modules</option>
+            <option value="remote">Remote Modules</option>
+            <option value="project">Project Modules</option>
+            <option value="node_modules">Libraries Modules</option>
             <option value="assets">Assets</option>
             <option value="css">CSS</option>
-            <option value="internal_lib">Internal Libraries</option>
+            <option value="polyfills">Polyfills</option>
         </select>
     </div>
     <script>const graph = ${graphDataStr};</script>

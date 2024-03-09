@@ -2,7 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const width = document.body.clientWidth
   const height = document.body.clientHeight
 
-  const color = d3.scaleOrdinal().domain(["node_modules", "assets", "project", "css", "internal_lib"]).range(["#ff7f00", "#984ea3", "#377eb8", "#4daf4a", "#e41a1c", "#a65628"])
+  const color = d3
+    .scaleOrdinal()
+    .domain(["node_modules", "assets", "project", "css", "internal_lib", "remote", "dynamic", "polyfills"])
+    .range(["#ff7f00", "#984ea3", "#377eb8", "#4daf4a", "#e41a1c", "#a65628", "#f781bf", "#999999", "#8dd3c7"])
 
   // Setting up the SVG with zoom functionality
   const svg = d3
@@ -116,6 +119,5 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("searchInput").addEventListener("input", filterAndUpdate)
   document.getElementById("typeFilter").addEventListener("change", filterAndUpdate)
 
-  // Assuming 'graph' is your initial data
   updateGraph(graph)
 })
