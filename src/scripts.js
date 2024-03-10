@@ -153,8 +153,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchTerm = document.getElementById("searchInput").value.toLowerCase()
     const typeTerm = document.getElementById("typeFilter").value
 
-    const filteredNodes = graph.nodes.filter((d) => d.name.toLowerCase().includes(searchTerm) && (typeTerm === "" || d.group === typeTerm))
-    const filteredLinks = graph.links.filter((l) => filteredNodes.some((n) => n.id === l.source.id || n.id === l.target.id))
+    const filteredNodes = graph.nodes.filter((node) => node.name.toLowerCase().includes(searchTerm) && (typeTerm === "" || node.group === typeTerm))
+    const filteredNodeIds = new Set(filteredNodes.map((node) => node.id))
+    const filteredLinks = graph.links.filter((link) => filteredNodeIds.has(link.source.id) && filteredNodeIds.has(link.target.id))
 
     const newGraph = {nodes: filteredNodes, links: filteredLinks}
     updateGraph(newGraph)
