@@ -84,4 +84,15 @@ select:focus {
 #filters {
   margin-left: 4px;
 }
-
+#modules-info {
+  position: fixed;
+  bottom: 4px;
+  left: 8px;
+  z-index: 1000;
+  width: fit-content;
+  background: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

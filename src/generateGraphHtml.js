@@ -39,6 +39,7 @@ function generateGraphHtml(graphData) {
     <script>
      ${scripts}
     </script>
+    <div id="modules-info"></div>
 </body>
 </html>
   `

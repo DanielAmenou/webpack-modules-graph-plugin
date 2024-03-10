@@ -156,16 +156,44 @@ document.addEventListener("DOMContentLoaded", function () {
     const filteredNodes = graph.nodes.filter((d) => d.name.toLowerCase().includes(searchTerm) && (typeTerm === "" || d.group === typeTerm))
     const filteredLinks = graph.links.filter((l) => filteredNodes.some((n) => n.id === l.source.id || n.id === l.target.id))
 
-    updateGraph({nodes: filteredNodes, links: filteredLinks})
+    const newGraph = {nodes: filteredNodes, links: filteredLinks}
+    updateGraph(newGraph)
+    displayModuleInfo(aggregateModulesData(newGraph.nodes))
+  }
+
+  function aggregateModulesData(nodes) {
+    return nodes.reduce(
+      (acc, node) => {
+        acc.totalCount += 1
+        acc.totalSize += node.size || 0
+        return acc
+      },
+      {totalCount: 0, totalSize: 0}
+    )
+  }
+
+  function displayModuleInfo({totalCount, totalSize}) {
+    const countElement = document.getElementById("modules-info")
+    countElement.textContent = `${totalCount} modules, Total size: ${formatBytes(totalSize)}`
   }
 
   document.getElementById("searchInput").addEventListener("input", filterAndUpdate)
   document.getElementById("typeFilter").addEventListener("change", filterAndUpdate)
 
   updateGraph(graph)
+  displayModuleInfo(aggregateModulesData(graph.nodes))
 })
 
 function rgbToHex(rgb) {
   let [r, g, b] = rgb.match(/\d+/g)
   return "#" + ((1 << 24) + (parseInt(r) << 16) + (parseInt(g) << 8) + parseInt(b)).toString(16).slice(1)
+}
+
+function formatBytes(bytes, decimals = 2) {
+  if (bytes === 0) return "0 Bytes"
+  const k = 1024
+  const dm = decimals < 0 ? 0 : decimals
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
 }
