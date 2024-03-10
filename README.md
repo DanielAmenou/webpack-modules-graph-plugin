@@ -25,6 +25,7 @@ module.exports = {
   plugins: [
     new ModulesGraphPlugin({
       // Options here
+      openFile: true, // Open the generated file in the browser
       filename: "modules-graph.html", // Output file
       showOnlyProjectFiles: false, // Customize according to your needs
     }),

@@ -1,12 +1,12 @@
 const fs = require("fs")
 const path = require("path")
-const generateGraphHtml= require("./generateGraphHtml")
+const generateGraphHtml = require("./generateGraphHtml")
 const {graphDataBuilder} = require("./GraphDataBuilder")
 
 class ModulesGraphPlugin {
   constructor(options = {}) {
     this.filename = options.filename || "modules-graph.html"
-    // Add an option to show only project files
+    this.openFile = options.openFile !== undefined ? options.openFile : true
     this.showOnlyProjectFiles = options.showOnlyProjectFiles || false
   }
 
@@ -16,6 +16,7 @@ class ModulesGraphPlugin {
       const graphData = graphDataBuilder(stats.compilation, this.showOnlyProjectFiles) // Pass the option to the builder
       const graphHtml = generateGraphHtml(graphData)
       const filePath = path.resolve(outputPath, this.filename)
+      const isWatchMode = compiler.watchMode
 
       fs.writeFile(filePath, graphHtml, (err) => {
         if (err) {
@@ -23,11 +24,13 @@ class ModulesGraphPlugin {
           callback(err)
           return
         }
-        import("open")
-          .then((open) => {
-            open.default(filePath).then(() => callback())
-          })
-          .catch((err) => console.error("Failed to open the file:", err))
+        if (this.openFile && !isWatchMode) {
+          import("open")
+            .then((open) => {
+              open.default(filePath).then(() => callback())
+            })
+            .catch((err) => console.error(`Failed to open ${filePath}`, err))
+        }
       })
     })
   }
