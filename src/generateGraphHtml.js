@@ -35,7 +35,7 @@ function generateGraphHtml(graphData) {
       </div>
     </div>
 
-    <script>const graph = ${graphDataStr};</script>
+    <script>let graph = ${graphDataStr};</script>
     <script>
      ${scripts}
     </script>

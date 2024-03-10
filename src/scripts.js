@@ -3,6 +3,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const height = document.body.clientHeight
   const groups = ["node_modules", "assets", "project", "css", "remote", "polyfills"]
 
+  const currentFilter = {
+    searchTerm: "",
+    typeTerm: "",
+  }
+
   // Setting up the color selectors
   groups.forEach((group) => {
     const groupItem = document.createElement("div")
@@ -90,6 +95,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let node = graphGroup.append("g").attr("class", "nodes").selectAll("circle")
 
+  function filterGraphBasedOnCurrentCriteria(graph, filter) {
+    const filteredNodes = graph.nodes.filter((node) => node.name.toLowerCase().includes(filter.searchTerm) && (filter.typeTerm === "" || node.group === filter.typeTerm))
+    const filteredNodeIds = new Set(filteredNodes.map((node) => node.id))
+    const filteredLinks = graph.links.filter((link) => filteredNodeIds.has(link.source.id) && filteredNodeIds.has(link.target.id))
+    return {nodes: filteredNodes, links: filteredLinks}
+  }
+
+  function deleteNodeAndDependencies(nodeId) {
+    function collectDependencies(toBeRemoved, currentNodeId) {
+      graph.links.forEach((link) => {
+        if (link.source.id === currentNodeId && !toBeRemoved.has(link.target.id)) {
+          toBeRemoved.add(link.target.id)
+          collectDependencies(toBeRemoved, link.target.id)
+        }
+      })
+    }
+
+    const toBeRemoved = new Set([nodeId])
+    collectDependencies(toBeRemoved, nodeId)
+
+    const remainingNodes = graph.nodes.filter((node) => !toBeRemoved.has(node.id))
+    const remainingLinks = graph.links.filter((link) => !toBeRemoved.has(link.source.id) && !toBeRemoved.has(link.target.id))
+
+    const newGraph = {nodes: remainingNodes, links: remainingLinks}
+
+    graph = newGraph
+    const filteredGraph = filterGraphBasedOnCurrentCriteria(graph, currentFilter)
+    updateGraph(filteredGraph)
+
+    simulation.nodes(remainingNodes)
+    simulation.force("link").links(remainingLinks)
+    simulation.alpha(1).restart()
+    displayModuleInfo(aggregateModulesData(remainingNodes))
+  }
+
   function updateGraph(filteredGraph) {
     link = link.data(filteredGraph.links, (d) => d.source.id + "-" + d.target.id)
     link.exit().remove()
@@ -104,6 +144,11 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("r", (d) => Math.sqrt(d.size) / 10 + 5)
       .attr("fill", (d) => color(d.group))
       .attr("stroke", "#fff")
+      .on("dblclick", (event, d) => {
+        event.preventDefault()
+        event.stopPropagation()
+        deleteNodeAndDependencies(d.id)
+      })
       .on("mouseover", (event, d) => {
         const displaySize = typeof d.displaySize !== "undefined" ? d.displaySize : d.size
         const tooltipContent = `Name: ${d.name}<br>Size: ${displaySize}`
@@ -152,6 +197,8 @@ document.addEventListener("DOMContentLoaded", function () {
   function filterAndUpdate() {
     const searchTerm = document.getElementById("searchInput").value.toLowerCase()
     const typeTerm = document.getElementById("typeFilter").value
+    currentFilter.searchTerm = searchTerm
+    currentFilter.typeTerm = typeTerm
 
     const filteredNodes = graph.nodes.filter((node) => node.name.toLowerCase().includes(searchTerm) && (typeTerm === "" || node.group === typeTerm))
     const filteredNodeIds = new Set(filteredNodes.map((node) => node.id))
