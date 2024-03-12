@@ -1,7 +1,7 @@
 const fs = require("fs")
 const path = require("path")
 const generateGraphHtml = require("./generateGraphHtml")
-const {graphDataBuilder} = require("./GraphDataBuilder")
+const {graphDataBuilder} = require("./graphDataBuilder")
 
 class ModulesGraphPlugin {
   constructor(options = {}) {
