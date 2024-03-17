@@ -59,4 +59,8 @@ function formatSize(bytes) {
   return (bytes / 1048576).toFixed(2) + " MB"
 }
 
-module.exports = {formatModuleName, determineGroup, formatSize}
+const normalizePath = (path) => {
+  return path.replace(/.*node_modules\//, "").replace(/\?.*/, "")
+}
+
+module.exports = {formatModuleName, determineGroup, formatSize, normalizePath}
