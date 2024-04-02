@@ -26,7 +26,6 @@
   "author": "Daniel Amenou <amenou.daniel@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "open": "^10.0.4",
-    "webpack": "^5.90.3"
+    "open": "^10.0.4"
   }
 }
