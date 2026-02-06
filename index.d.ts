@@ -1,7 +1,7 @@
 interface ModulesGraphPluginOptions {
-  showOnlyProjectFiles: string;
-  fileName: string;
-  openFile: boolean;
+  showOnlyProjectFiles?: boolean;
+  filename?: string;
+  openFile?: boolean;
 }
 
 declare class ModulesGraphPlugin {
