@@ -1,5 +1,9 @@
 # Webpack Modules Graph Plugin
 
+[![License](https://img.shields.io/npm/l/webpack-modules-graph-plugin.svg)](https://github.com/DanielAmenou/webpack-modules-graph-plugin/blob/main/LICENSE)
+[![npm downloads](https://img.shields.io/npm/dt/webpack-modules-graph-plugin.svg)](https://www.npmjs.com/package/webpack-modules-graph-plugin)
+[![npm version](https://img.shields.io/npm/v/webpack-modules-graph-plugin.svg)](https://www.npmjs.com/package/webpack-modules-graph-plugin)
+
 A powerful Webpack plugin that generates an interactive **3D visualization** of your project's module dependency graph using Three.js. Explore your bundle in an immersive 3D space!
 
 ## ✨ Features
